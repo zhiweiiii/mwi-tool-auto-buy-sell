@@ -14,8 +14,8 @@
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=milkywayidle.com
 // @grant        none
 // @run-at       document-start
-// @updateURL    https://raw.githubusercontent.com/xxx/yyy/main/mwimytool.user.js
-// @downloadURL  https://raw.githubusercontent.com/xxx/yyy/main/mwimytool.user.js
+// @updateURL    https://github.com/zhiweiiii/mwi-tool-auto-buy-sell/blob/main/plugins.js
+// @downloadURL  https://github.com/zhiweiiii/mwi-tool-auto-buy-sell/blob/main/plugins.js
 // ==/UserScript==
  
 (function () {
