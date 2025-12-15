@@ -9441,7 +9441,7 @@
                     }
                     await this.allSell(wupinInfo, 'bid');
                     //等待1秒
-                    await new Promise(resolve => setTimeout(resolve, 900));
+                    await new Promise(resolve => setTimeout(resolve, 1200));
                 }
             }     
              const quickBuy=async ()=>{
@@ -9539,12 +9539,12 @@
                     <button
                     id="script_allSell_btn"
                     style="border-radius: 3px; background-color: #007bff; color: black;">
-                    出售全部材料&技能书
+                    出售
                     </button>
                     <button
                     id="script_allAddWupin_btn"
                     style="border-radius: 3px; background-color: #007bff; color: black;">
-                    自动补货
+                    补货
                     </button>
                     </div>`;
                     node.insertAdjacentHTML("beforebegin", buttonsDiv);
@@ -9593,8 +9593,8 @@
                 await this.executeSell(itemInfo, quantity, price, isInstantSell);
                
             } catch (error) {
+                await new Promise(resolve => setTimeout(resolve, 5000));
                 console.error(LANG.quickSell.sellFailed + ':', error);
-                this.showToast(`${LANG.quickSell.sellFailed}: ${error.message}`, 'error');
             } finally {
                 this.isProcessing = false;
             }
