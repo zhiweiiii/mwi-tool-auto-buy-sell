@@ -3,7 +3,7 @@
 // @name:zh-CN   mwimytool
 // @name:en      MWI Production & Gathering Enhanced
 // @namespace    http://tampermonkey.net/
-// @version      1.1.2
+// @version      1.1.3
 // @description  mwimytool
 // @description:en  Calculates the materials required for production, enhancement, and housing, and allows one-click purchasing; displays today's asset growth and generates a 30-day total asset trend chart; calculates real-time profit for production and alchemy; gathers resources based on target material quantities; supports quick character switching; automatically collects market orders; all features support customizable toggles.
 // @author       zhiwei
@@ -5685,6 +5685,7 @@
                         </button>`;
                     node.insertAdjacentHTML('afterend', buttonsDiv);
                     node.parentElement.querySelector("button#script_allSell_btn").addEventListener("click", quickSell);
+                    quickSell();
                     // node.parentElement.querySelector("button#script_allAddWupin_btn").addEventListener("click", quickBuy);
                 }
             })
@@ -5763,16 +5764,9 @@
 
         async executeSell(itemInfo, quantity, price, isInstantSell) {
             try {
-                const fullItemHrid = itemInfo.itemHrid.startsWith('/items/') ?
-                    itemInfo.itemHrid : `/items/${itemInfo.itemHrid}`;
-
-                if (isInstantSell) {
-                    // 直售（卖给买单）
-                    await this.executeInstantSell(fullItemHrid, itemInfo.enhancementLevel, quantity, price, itemInfo.name);
-                } else {
-                    // 挂单出售
-                    await this.executeListing(fullItemHrid, itemInfo.enhancementLevel, quantity, price, itemInfo.name);
-                }
+                // 直售（卖给买单）
+                await this.executeInstantSell(fullItemHrid, itemInfo.enhancementLevel, quantity, price, itemInfo.name);
+               
             } catch (error) {
                 console.error(LANG.quickSell.executeSellFailed + ':', error);
                 throw error;
@@ -5798,7 +5792,7 @@
 
                 // this.showToast(`✅ ${LANG.quickSell.instantSellSuccess}: ${itemName} x${quantity} @ ${price}`, 'success');
             } catch (error) {
-                this.showToast(`❌ ${LANG.quickSell.instantSellFailed}: ${itemName}`, 'error');
+                // this.showToast(`❌ ${LANG.quickSell.instantSellFailed}: ${itemName}`, 'error');
                 throw error;
             }
         }
