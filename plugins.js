@@ -3,7 +3,7 @@
 // @name:zh-CN   mwimytool
 // @name:en      MWI Production & Gathering Enhanced
 // @namespace    http://tampermonkey.net/
-// @version      1.0.3
+// @version      1.0.4
 // @description  mwimytool
 // @description:en  Calculates the materials required for production, enhancement, and housing, and allows one-click purchasing; displays today's asset growth and generates a 30-day total asset trend chart; calculates real-time profit for production and alchemy; gathers resources based on target material quantities; supports quick character switching; automatically collects market orders; all features support customizable toggles.
 // @author       zhiwei
@@ -9533,25 +9533,26 @@
             
             // const targetNodes = document.querySelectorAll("div.Inventory_items__6SXv0");
         //    const targetNodes = document.querySelectorAll('div[style="color: orange; font-size: 0.875rem; text-align: left;"]');
-            const node = document.getElementById('script_sortByNone_btn');      
-            const targetButton = document.getElementById('script_allSell_btn');
-            
-            if(node && !targetButton){
-                const buttonsDiv = `
-                    <button
-                    id="script_allSell_btn"
-                    style="border-radius: 3px; background-color: #007bff; color: black;">
-                    出售
-                    </button>
-                    <button
-                    id="script_allAddWupin_btn"
-                    style="border-radius: 3px; background-color: #007bff; color: black;">
-                    补货
-                    </button>`;
-                    node.insertAdjacentHTML( 'afterend', buttonsDiv);
-                    node.parentElement.querySelector("button#script_allSell_btn").addEventListener("click", quickSell);
-                    node.parentElement.querySelector("button#script_allAddWupin_btn").addEventListener("click", quickBuy);
-            }
+            const nodes = document.querySelectorAll('script_sortByNone_btn');      
+            nodes.forEach(node => {
+                const targetButton = node.parentElement.getElementById('script_allSell_btn');
+                if(node && !targetButton){
+                    const buttonsDiv = `
+                        <button
+                        id="script_allSell_btn"
+                        style="border-radius: 3px; background-color: #007bff; color: black;">
+                        出售
+                        </button>
+                        <button
+                        id="script_allAddWupin_btn"
+                        style="border-radius: 3px; background-color: #007bff; color: black;">
+                        补货
+                        </button>`;
+                        node.insertAdjacentHTML( 'afterend', buttonsDiv);
+                        node.parentElement.querySelector("button#script_allSell_btn").addEventListener("click", quickSell);
+                        node.parentElement.querySelector("button#script_allAddWupin_btn").addEventListener("click", quickBuy);
+                }
+            })
         }
 
 
