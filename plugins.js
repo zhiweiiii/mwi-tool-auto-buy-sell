@@ -3,7 +3,7 @@
 // @name:zh-CN   mwimytool
 // @name:en      MWI Production & Gathering Enhanced
 // @namespace    http://tampermonkey.net/
-// @version      1.1.3
+// @version      1.1.4
 // @description  mwimytool
 // @description:en  Calculates the materials required for production, enhancement, and housing, and allows one-click purchasing; displays today's asset growth and generates a 30-day total asset trend chart; calculates real-time profit for production and alchemy; gathers resources based on target material quantities; supports quick character switching; automatically collects market orders; all features support customizable toggles.
 // @author       zhiwei
@@ -5721,14 +5721,14 @@
                 }
             try{               
                 // 执行出售
-                await this.executeSell(itemInfo, quantity, price, true);
+                await this.executeSell(itemInfo, quantity, price);
 
             } catch (error) {
                 if (error.message.includes("orderNotFulfilled")) {
                     const marketData = await this.getMarketData(itemInfo.itemHrid);
                     const bids = marketData.orderBooks?.[0]?.bids;
                     const price2 = bids[0].price;
-                    await this.executeSell(itemInfo, quantity, price2, true);
+                    await this.executeSell(itemInfo, quantity, price2);
                     await new Promise(resolve => setTimeout(resolve, 5000));
                 //    js可以catch不同类型的error 吗？Error: errorNotification.orderNotFulfilled
                 } else {
@@ -5762,10 +5762,10 @@
             return response.marketItemOrderBooks;
         }
 
-        async executeSell(itemInfo, quantity, price, isInstantSell) {
+        async executeSell(itemInfo, quantity, price) {
             try {
                 // 直售（卖给买单）
-                await this.executeInstantSell(fullItemHrid, itemInfo.enhancementLevel, quantity, price, itemInfo.name);
+                await this.executeInstantSell(itemInfo.itemHrid, 0, quantity, price, itemInfo.name);
                
             } catch (error) {
                 console.error(LANG.quickSell.executeSellFailed + ':', error);
