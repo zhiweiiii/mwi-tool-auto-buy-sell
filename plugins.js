@@ -1,16 +1,20 @@
 // ==UserScript==
 // @name         mwimytool
+// @name         mwimytool
 // @name:zh-CN   mwimytool
+// @name:en      mwimytool
 // @name:en      mwimytool
 // @namespace    http://tampermonkey.net/
 // @version      1.1.6
 // @description  mwimytool
+// @description:en  mwimytool
 // @description:en  mwimytool
 // @author       zhiwei
 // @license      CC-BY-NC-SA-4.0
 // @match        https://www.milkywayidle.com/*
 // @match        https://www.milkywayidlecn.com/*
 // @match        https://test.milkywayidle.com/*
+// @icon         https://www.milkywayidle.com/favicon.svg
 // @icon         https://www.milkywayidle.com/favicon.svg
 // @grant        none
 // @run-at       document-start
