@@ -3,7 +3,7 @@
 // @name:zh-CN   mwimytool
 // @name:en      MWI Production & Gathering Enhanced
 // @namespace    http://tampermonkey.net/
-// @version      1.0.7
+// @version      1.0.8
 // @description  mwimytool
 // @description:en  Calculates the materials required for production, enhancement, and housing, and allows one-click purchasing; displays today's asset growth and generates a 30-day total asset trend chart; calculates real-time profit for production and alchemy; gathers resources based on target material quantities; supports quick character switching; automatically collects market orders; all features support customizable toggles.
 // @author       zhiwei
@@ -7157,7 +7157,7 @@
                 // const price = this.calculatePrice(marketData, itemInfo.enhancementLevel, quantity, sellType);
                 const rawDataString = localStorage.getItem("PGE_MARKET_DATA");
                 const marketData = JSON.parse(rawDataString);
-                price= marketData?.[itemInfo.en_name]?.bid
+                const price= marketData?.[itemInfo.en_name]?.bid
                 if (!price || price <= 0) {
                     return;
                 }
