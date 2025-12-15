@@ -5,7 +5,7 @@
 // @name:en      mwimytool
 // @name:en      mwimytool
 // @namespace    http://tampermonkey.net/
-// @version      1.1.8
+// @version      1.1.9
 // @description  mwimytool
 // @description:en  mwimytool
 // @description:en  mwimytool
