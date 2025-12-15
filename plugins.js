@@ -3,7 +3,7 @@
 // @name:zh-CN   mwimytool
 // @name:en      MWI Production & Gathering Enhanced
 // @namespace    http://tampermonkey.net/
-// @version      1.1.0
+// @version      1.1.1
 // @description  mwimytool
 // @description:en  Calculates the materials required for production, enhancement, and housing, and allows one-click purchasing; displays today's asset growth and generates a 30-day total asset trend chart; calculates real-time profit for production and alchemy; gathers resources based on target material quantities; supports quick character switching; automatically collects market orders; all features support customizable toggles.
 // @author       zhiwei
@@ -5694,7 +5694,6 @@
 
         // menuContainer - 物品信息 ,bid  -直售， 
         async allSell(menuContainer, sellType) {
-            try{
                 // 获取物品信息
                 const itemInfo = menuContainer;
 
@@ -5719,14 +5718,46 @@
                 if (!price || price <= 0) {
                     return;
                 }
+            try{               
                 // 执行出售
-                const isInstantSell = sellType === 'bid'; // bid是直售，ask是挂单
-                await this.executeSell(itemInfo, quantity, price, isInstantSell);
+                await this.executeSell(itemInfo, quantity, price, true);
 
             } catch (error) {
-                await new Promise(resolve => setTimeout(resolve, 5000));
+                if (error.message.includes("orderNotFulfilled")) {
+                    const marketData = await this.getMarketData(itemInfo.itemHrid);
+                    const price2 = this.calculatePrice(marketData, itemInfo.enhancementLevel, quantity, sellType);
+                    await this.executeSell(itemInfo, quantity, price2, true);
+                    await new Promise(resolve => setTimeout(resolve, 5000));
+                //    js可以catch不同类型的error 吗？Error: errorNotification.orderNotFulfilled
+                } else {
+                    await new Promise(resolve => setTimeout(resolve, 5000));
+                }
                 console.error(LANG.quickSell.sellFailed + ':', error);
             }
+        }
+
+        async getMarketData(itemHrid) {
+            const fullItemHrid = itemHrid.startsWith('/items/') ? itemHrid : `/items/${itemHrid}`;
+
+            const cached = window.marketDataCache.get(fullItemHrid);
+            if (cached && Date.now() - cached.timestamp < 60000) {
+                return cached.data;
+            }
+
+            if (!window.PGE.core) {
+                throw new Error('游戏核心对象未就绪');
+            }
+
+            const responsePromise = window.PGE.waitForMessage(
+                'market_item_order_books_updated',
+                8000,
+                (responseData) => responseData.marketItemOrderBooks?.itemHrid === fullItemHrid
+            );
+
+            window.PGE.core.handleGetMarketItemOrderBooks(fullItemHrid);
+
+            const response = await responsePromise;
+            return response.marketItemOrderBooks;
         }
 
         async executeSell(itemInfo, quantity, price, isInstantSell) {
