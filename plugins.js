@@ -5725,7 +5725,8 @@
             } catch (error) {
                 if (error.message.includes("orderNotFulfilled")) {
                     const marketData = await this.getMarketData(itemInfo.itemHrid);
-                    const price2 = this.calculatePrice(marketData, itemInfo.enhancementLevel, quantity, sellType);
+                    const bids = marketData.orderBooks?.[0]?.bids;
+                    const price2 = bids[0].price;
                     await this.executeSell(itemInfo, quantity, price2, true);
                     await new Promise(resolve => setTimeout(resolve, 5000));
                 //    js可以catch不同类型的error 吗？Error: errorNotification.orderNotFulfilled
