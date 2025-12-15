@@ -3,7 +3,7 @@
 // @name:zh-CN   mwimytool
 // @name:en      MWI Production & Gathering Enhanced
 // @namespace    http://tampermonkey.net/
-// @version      1.0.5
+// @version      1.0.6
 // @description  mwimytool
 // @description:en  Calculates the materials required for production, enhancement, and housing, and allows one-click purchasing; displays today's asset growth and generates a 30-day total asset trend chart; calculates real-time profit for production and alchemy; gathers resources based on target material quantities; supports quick character switching; automatically collects market orders; all features support customizable toggles.
 // @author       zhiwei
@@ -9400,50 +9400,7 @@
             return null;      // 找不到返回 null
             }
 
-            const quickSell=async ()=>{
-                const grids = document.querySelectorAll('.Inventory_itemGrid__20YAH');
-
-                // 查找第一个 span 文本为 "资源" 的容器
-                const resourceGrid = Array.from(grids).find(grid => {
-                const firstSpan = grid.querySelector('.Inventory_label__XEOAx span');
-                return firstSpan?.textContent.trim() === '资源';
-                });
-                const allMenu1 = resourceGrid.querySelectorAll('.Item_itemContainer__x7kH1');
-
-                // 查找第一个 span 文本为 "技能书" 的容器
-                const resourceGrid2 = Array.from(grids).find(grid => {
-                const firstSpan = grid.querySelector('.Inventory_label__XEOAx span');
-                return firstSpan?.textContent.trim() === '技能书';
-                });
-                let combinedMenu = [...allMenu1];   
-                if(resourceGrid2){
-                    const allMenu2 = resourceGrid2.querySelectorAll('.Item_itemContainer__x7kH1');
-                    if(allMenu2){
-                        combinedMenu = [...allMenu1, ...allMenu2];
-                    }
-                }
-                // return ;
-                for (const itemWupin  of combinedMenu){ 
-                    // console.info('itemWupin',itemWupin)
-                    const label = itemWupin?.children[0]?.children[0]?.querySelector('svg')?.getAttribute('aria-label');
-                    const itemHrid = getKeyByChinese(label);
-                    if(itemHrid==null || label === '任务水晶'){
-                        continue;
-                    }
-                    const countStr = itemWupin.querySelector('.Item_count__1HVvv')?.textContent;
-                    const count = countStr ? parseInt(countStr, 10) : 0;
-                    const wupinInfo = {
-                        name: label,
-                        itemHrid:  itemHrid,
-                        num: count,
-                        enhancementLevel: 0
-                    }
-                    await this.allSell(wupinInfo, 'bid');
-                    //等待1秒
-                    await new Promise(resolve => setTimeout(resolve, 1200));
-                }
-            }     
-             const quickBuy=async ()=>{
+            const quickBuy=async ()=>{
                 let list = JSON.parse(localStorage.getItem("buyItem")) || [];
 
                 const grids = document.querySelectorAll('.Inventory_itemGrid__20YAH');
@@ -9507,29 +9464,54 @@
                 this.showToast(LANG.wsNotAvailable, 'error');
                 return;
             }
+            await api.batchDirectPurchase(buyInfo, CONFIG.DELAYS.PURCHASE);
+            }   
 
+            const quickSell=async ()=>{
+                quickBuy();
+                const grids = document.querySelectorAll('.Inventory_itemGrid__20YAH');
 
-            const askResults = await api.batchDirectPurchase(buyInfo, CONFIG.DELAYS.PURCHASE);
-            results.push(...askResults);
-            let successCount = 0;
-            results.forEach(result => {
-                const isBidOrder = result.item.purchaseMode === 'bid';
-                const statusText = isBidOrder ?
-                    (result.success ? LANG.submitted : LANG.failed) :
-                    (result.success ? LANG.purchased : LANG.failed);
- 
-                const message = `${statusText} ${result.item.materialName || result.item.itemHrid} x${result.item.quantity}`;
-                this.showToast(message, result.success ? 'success' : 'error', 2000);
- 
-                if (result.success) successCount++;
-            });
-            // 显示总结信息
-            const finalMessage = successCount > 0 ?
-                `${LANG.complete} ${LANG.success} ${successCount}/${results.length} ${LANG.cartItem}` :
-                LANG.allFailed;
- 
-            this.showToast(finalMessage, successCount > 0 ? 'success' : 'error', successCount > 0 ? 5000 : 3000);
-            }    
+                // 查找第一个 span 文本为 "资源" 的容器
+                const resourceGrid = Array.from(grids).find(grid => {
+                const firstSpan = grid.querySelector('.Inventory_label__XEOAx span');
+                return firstSpan?.textContent.trim() === '资源';
+                });
+                const allMenu1 = resourceGrid.querySelectorAll('.Item_itemContainer__x7kH1');
+
+                // 查找第一个 span 文本为 "技能书" 的容器
+                const resourceGrid2 = Array.from(grids).find(grid => {
+                const firstSpan = grid.querySelector('.Inventory_label__XEOAx span');
+                return firstSpan?.textContent.trim() === '技能书';
+                });
+                let combinedMenu = [...allMenu1];   
+                if(resourceGrid2){
+                    const allMenu2 = resourceGrid2.querySelectorAll('.Item_itemContainer__x7kH1');
+                    if(allMenu2){
+                        combinedMenu = [...allMenu1, ...allMenu2];
+                    }
+                }
+                // return ;
+                for (const itemWupin  of combinedMenu){ 
+                    // console.info('itemWupin',itemWupin)
+                    const label = itemWupin?.children[0]?.children[0]?.querySelector('svg')?.getAttribute('aria-label');
+                    const itemHrid = getKeyByChinese(label);
+                    if(itemHrid==null || label === '任务水晶'){
+                        continue;
+                    }
+                    const countStr = itemWupin.querySelector('.Item_count__1HVvv')?.textContent;
+                    const count = countStr ? parseInt(countStr, 10) : 0;
+                    const wupinInfo = {
+                        name: label,
+                        itemHrid:  itemHrid,
+                        num: count,
+                        enhancementLevel: 0
+                    }
+                    await this.allSell(wupinInfo, 'bid');
+                    //等待1秒
+                    await new Promise(resolve => setTimeout(resolve, 1200));
+                }
+            }     
+              
             
             // const targetNodes = document.querySelectorAll("div.Inventory_items__6SXv0");
         //    const targetNodes = document.querySelectorAll('div[style="color: orange; font-size: 0.875rem; text-align: left;"]');
@@ -9541,16 +9523,11 @@
                         <button
                         id="script_allSell_btn"
                         style="border-radius: 3px; background-color: #007bff; color: black;">
-                        出售
-                        </button>
-                        <button
-                        id="script_allAddWupin_btn"
-                        style="border-radius: 3px; background-color: #007bff; color: black;">
-                        补货
+                        出售&补货
                         </button>`;
                         node.insertAdjacentHTML( 'afterend', buttonsDiv);
                         node.parentElement.querySelector("button#script_allSell_btn").addEventListener("click", quickSell);
-                        node.parentElement.querySelector("button#script_allAddWupin_btn").addEventListener("click", quickBuy);
+                        // node.parentElement.querySelector("button#script_allAddWupin_btn").addEventListener("click", quickBuy);
                 }
             })
         }
