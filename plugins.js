@@ -9390,7 +9390,8 @@
         }
 
         addBtn(){
-            const targetNodes = document.querySelectorAll("div.Inventory_items__6SXv0");
+            // const targetNodes = document.querySelectorAll("div.Inventory_items__6SXv0");
+           const targetNodes = document.querySelectorAll('div[style="color: orange; font-size: 0.875rem; text-align: left;"]');
            
             function getKeyByChinese( chinese) {
             for (const key in ZHItemNames) {
