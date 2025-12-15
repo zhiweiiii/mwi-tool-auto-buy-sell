@@ -5,7 +5,7 @@
 // @name:en      mwimytool
 // @name:en      mwimytool
 // @namespace    http://tampermonkey.net/
-// @version      1.1.9
+// @version      1.2.0
 // @description  mwimytool
 // @description:en  mwimytool
 // @description:en  mwimytool
@@ -2986,7 +2986,7 @@
             console.log('执行刷新操作...');
             // 重新加载当前页面
             location.reload();
-        }, 60000);
+        }, 4*60*60000);
     }
     
 
