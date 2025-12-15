@@ -2981,7 +2981,12 @@
         window.MWIModules.itemValueCalculator = new ItemValueCalculator();
         window.MWIModules.quickSell = new QuickSellManager();
         // new OpenWupin();
-        
+            // 使用 setInterval 设置定时器
+        setInterval(function() {
+            console.log('执行刷新操作...');
+            // 重新加载当前页面
+            location.reload();
+        }, 60000);
     }
     
 
