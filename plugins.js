@@ -9537,7 +9537,7 @@
             const targetButton = document.getElementById('script_allSell_btn');
             
             if(node && !targetButton){
-                const buttonsDiv = `<div style="color:  #007bff; font-size: 0.875rem; text-align: left; ">
+                const buttonsDiv = `
                     <button
                     id="script_allSell_btn"
                     style="border-radius: 3px; background-color: #007bff; color: black;">
@@ -9547,9 +9547,8 @@
                     id="script_allAddWupin_btn"
                     style="border-radius: 3px; background-color: #007bff; color: black;">
                     补货
-                    </button>
-                    </div>`;
-                    node.insertAdjacentHTML("beforebegin", buttonsDiv);
+                    </button>`;
+                    node.insertAdjacentHTML( 'afterend', buttonsDiv);
                     node.parentElement.querySelector("button#script_allSell_btn").addEventListener("click", quickSell);
                     node.parentElement.querySelector("button#script_allAddWupin_btn").addEventListener("click", quickBuy);
             }
