@@ -5,7 +5,7 @@
 // @name:en      mwimytool
 // @name:en      mwimytool
 // @namespace    http://tampermonkey.net/
-// @version      1.1.6
+// @version      1.1.7
 // @description  mwimytool
 // @description:en  mwimytool
 // @description:en  mwimytool
@@ -3003,7 +3003,28 @@
             console.error('[PGE] Error checking page ready:', error);
             return false;
         }
-    } ``
+    }
+
+    // ==================== 游戏核心对象获取 ====================
+    function getGameCore() {
+        try {
+            const el = document.querySelector(".GamePage_gamePage__ixiPl");
+            if (!el) return null;
+
+            const k = Object.keys(el).find(k => k.startsWith("__reactFiber$"));
+            if (!k) return null;
+
+            let f = el[k];
+            while (f) {
+                if (f.stateNode?.sendPing) return f.stateNode;
+                f = f.return;
+            }
+            return null;
+        } catch (error) {
+            console.error('[PGE] Error getting game core:', error);
+            return null;
+        }
+    }
 
     // ==================== 游戏状态检查 ====================
     function checkGameStateReady() {
