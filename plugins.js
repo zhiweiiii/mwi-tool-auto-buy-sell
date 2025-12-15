@@ -5,7 +5,7 @@
 // @name:en      mwimytool
 // @name:en      mwimytool
 // @namespace    http://tampermonkey.net/
-// @version      1.1.7
+// @version      1.1.8
 // @description  mwimytool
 // @description:en  mwimytool
 // @description:en  mwimytool
@@ -2942,25 +2942,28 @@
         }
 
         openWupin(){
-                        // 1. 定义目标按钮的选择器
-            const TARGET_SELECTOR = 'button.Button_button__1Fe9z';
+            const targetClass = 'button.Button_button__1Fe9z';
+            const targetText = '关闭';
 
-            // 2. 查找页面上匹配的按钮元素
-            // document.querySelector() 返回文档中与指定选择器或选择器组匹配的第一个 Element。
-            const closeButton = document.querySelector(TARGET_SELECTOR);
+            // 1. 先使用 CSS 选择器缩小范围
+            const potentialButtons = document.querySelectorAll(targetClass);
 
-            // 3. 判断按钮是否存在
-            if (closeButton) {
-                // 按钮存在，执行模拟点击
-                console.log("找到目标按钮，模拟点击。");
-                closeButton.click();
+            // 2. 使用 Array.prototype.filter 遍历并匹配文本内容
+            const targetButton = Array.from(potentialButtons).filter(button => {
+                // 使用 .textContent 或 .innerText 获取文本内容
+                // .trim() 用于去除文本前后的空格和换行符
+                return button.textContent.trim() === targetText;
                 
-                // 可选：为了确保点击后执行了操作（例如关闭了弹窗），
-                // 可以在点击后再次检查元素是否消失。
-                
+                // 如果只需要包含（而不是完全匹配），使用 .includes():
+                // return button.textContent.includes(targetText); 
+            })[0]; // [0] 获取第一个匹配的元素
+
+            // 3. 执行操作
+            if (targetButton) {
+                console.log("找到目标按钮，内容匹配：", targetButton);
+                targetButton.click();
             } else {
-                // 按钮不存在
-                console.log("目标按钮未找到，无需操作。");
+                console.log("未找到内容为 '关闭' 的匹配按钮。");
             }
         }
 
@@ -2977,7 +2980,7 @@
 
         window.MWIModules.itemValueCalculator = new ItemValueCalculator();
         window.MWIModules.quickSell = new QuickSellManager();
-        new OpenWupin();
+        // new OpenWupin();
         
     }
     
